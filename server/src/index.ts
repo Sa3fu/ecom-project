@@ -3,6 +3,8 @@ import cors from "cors";
 import helmet from "helmet";
 import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
+import { connectDB } from "./utils/connectDB";
+import { errorHandler } from "./middleware/errorHandler";
 
 dotenv.config();
 
@@ -17,13 +19,15 @@ app.use(
 app.use(helmet());
 app.use(cookieParser());
 app.use(express.json());
+app.use(errorHandler);
 
 app.get("/", (req, res) => {
   res.json({ message: "API running..." });
 });
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT;
 
-app.listen(PORT, () => {
+app.listen(PORT, async () => {
   console.log(`Server running on port ${PORT}`);
+  await connectDB();
 });
