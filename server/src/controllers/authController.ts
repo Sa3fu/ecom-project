@@ -61,6 +61,9 @@ export const login = async (
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     });
 
+    user.refreshToken = refreshToken;
+    await user.save();
+
     return res.json({
       message: "Logged in successfully",
       accessToken,
