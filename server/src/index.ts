@@ -5,6 +5,7 @@ import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
 import { connectDB } from "./utils/connectDB";
 import { errorHandler } from "./middleware/errorHandler";
+import authRoutes from "./routes/authRoutes";
 
 dotenv.config();
 
@@ -20,6 +21,7 @@ app.use(helmet());
 app.use(cookieParser());
 app.use(express.json());
 app.use(errorHandler);
+app.use("/auth", authRoutes);
 
 app.get("/", (req, res) => {
   res.json({ message: "API running..." });

@@ -1,6 +1,5 @@
 import mongoose, { Schema, Document } from "mongoose";
 
-// Interface definition remains correct
 export interface IUser extends Document {
   name: string;
   email: string;
