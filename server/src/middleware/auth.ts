@@ -15,7 +15,11 @@ export const auth = (req: Request, res: Response, next: NextFunction) => {
     process.env.ACCESS_TOKEN_SECRET!,
     (err: any, decode: any) => {
       if (err) return res.status(403).json({ message: "Invalid token" });
-      req.user = decode;
+      req.user = {
+        id: decode.id,
+        role: decode.role,
+      };
+
       next();
     }
   );
