@@ -7,6 +7,7 @@ import { connectDB } from "./utils/connectDB";
 import { errorHandler } from "./middleware/errorHandler";
 import authRoutes from "./routes/authRoutes";
 import refreshRoutes from "./routes/refreshRoutes";
+import productRoutes from "./routes/productRoutes";
 
 dotenv.config();
 
@@ -24,6 +25,7 @@ app.use(express.json());
 app.use(errorHandler);
 app.use("/auth", authRoutes);
 app.use("/auth", refreshRoutes);
+app.use("/products", productRoutes);
 
 app.get("/", (req, res) => {
   res.json({ message: "API running..." });
