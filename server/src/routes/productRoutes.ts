@@ -3,7 +3,6 @@ import {
   createProduct,
   updateProduct,
   deleteProduct,
-  getAllProducts,
   getProductById,
 } from "../controllers/productController";
 import { authMiddleware } from "../middleware/authMiddleware";
@@ -12,7 +11,6 @@ import { verifyRole } from "../middleware/verifyRole";
 const router = Router();
 
 //Public Routes
-router.get("/", getAllProducts);
 router.get("/:id", getProductById);
 
 //Admin Routes

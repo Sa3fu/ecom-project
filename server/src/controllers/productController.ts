@@ -1,12 +1,31 @@
 import { Request, Response } from "express";
 import { Product } from "../models/Product";
+import { Category } from "../models/Category";
+import { slugify } from "../utils/slugify";
 
 //Create Product (ADMIN)
 
 export const createProduct = async (req: Request, res: Response) => {
   try {
-    const product = await Product.create(req.body);
-    res.status(201).json(product);
+    const { name, description, price, categories, stock, images } = req.body;
+    const exists = await Category.find({ _id: { $in: categories } });
+    if (exists.length !== categories.length) {
+      return res.status(400).json({ message: "Invalid categories" });
+    }
+
+    const slug = slugify(name, { lower: true, strict: true });
+
+    const product = await Product.create({
+      name,
+      description,
+      price,
+      categories,
+      slug,
+      stock,
+      images,
+    });
+
+    res.json(product);
   } catch (err) {
     return res.status(500).json({ message: "Error creating product", err });
   }
@@ -16,13 +35,19 @@ export const createProduct = async (req: Request, res: Response) => {
 
 export const updateProduct = async (req: Request, res: Response) => {
   try {
-    const updated = await Product.findByIdAndUpdate(req.params.id, req.body, {
+    const updates = { ...req.body };
+
+    if (updates.name) {
+      updates.slug = slugify(updates.name, { lower: true, strict: true });
+    }
+
+    const update = await Product.findByIdAndUpdate(req.params.id, updates, {
       new: true,
     });
 
-    if (!updated) return res.status(404).json({ message: "Product not found" });
+    if (!update) return res.status(404).json({ message: "Product not found" });
 
-    res.json(updated);
+    return res.status(200).json(update);
   } catch (err) {
     return res.status(500).json({ message: "Error updating product", err });
   }
@@ -32,9 +57,12 @@ export const updateProduct = async (req: Request, res: Response) => {
 
 export const deleteProduct = async (req: Request, res: Response) => {
   try {
-    const deleted = await Product.findByIdAndDelete(req.params.id);
+    const product = await Product.findByIdAndUpdate(req.params.id, {
+      isDeleted: true,
+      new: true,
+    });
 
-    if (!deleted) return res.status(404).json({ message: "Product not found" });
+    if (!product) return res.status(404).json({ message: "Product not found" });
 
     return res.status(200).json({ message: "Product deleted successfully" });
   } catch (err) {
@@ -42,22 +70,13 @@ export const deleteProduct = async (req: Request, res: Response) => {
   }
 };
 
-//Get All Product (PUBLIC)
-
-export const getAllProducts = async (req: Request, res: Response) => {
-  try {
-    const products = await Product.find();
-    res.json(products);
-  } catch (err) {
-    return res.status(500).json({ message: "Error getting products", err });
-  }
-};
-
 //Get Single Product (PUBLIC)
 
 export const getProductById = async (req: Request, res: Response) => {
   try {
-    const product = await Product.findById(req.params.id);
+    const product = await Product.findById(req.params.id, {
+      isDelete: false,
+    }).populate("categories");
 
     if (!product) return res.status(404).json({ message: "Product not found" });
 

@@ -10,6 +10,7 @@ import refreshRoutes from "./routes/refreshRoutes";
 import productRoutes from "./routes/productRoutes";
 import userRouter from "./routes/userRoutes";
 import categoryRoutes from "./routes/categoriesRoutes";
+import getPublicRoutes from "./routes/getPublicRoutes";
 
 dotenv.config();
 
@@ -30,6 +31,7 @@ app.use("/auth", refreshRoutes);
 app.use("/users", userRouter);
 app.use("/categories", categoryRoutes);
 app.use("/products", productRoutes);
+app.use("/product", getPublicRoutes);
 
 app.get("/", (req, res) => {
   res.json({ message: "API running..." });
