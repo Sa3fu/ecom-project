@@ -17,7 +17,7 @@ router.get("/:id", getProductById);
 
 //Admin Routes
 router.post("/", authMiddleware, verifyRole("admin"), createProduct);
-router.post("/:id", updateProduct);
-router.post("/delete/:id", deleteProduct);
+router.post("/:id", authMiddleware, verifyRole("admin"), updateProduct);
+router.post("/delete/:id", authMiddleware, verifyRole("admin"), deleteProduct);
 
 export default router;

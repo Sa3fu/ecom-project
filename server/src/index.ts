@@ -8,6 +8,8 @@ import { errorHandler } from "./middleware/errorHandler";
 import authRoutes from "./routes/authRoutes";
 import refreshRoutes from "./routes/refreshRoutes";
 import productRoutes from "./routes/productRoutes";
+import userRouter from "./routes/userRoutes";
+import categoryRoutes from "./routes/categoriesRoutes";
 
 dotenv.config();
 
@@ -25,6 +27,8 @@ app.use(express.json());
 app.use(errorHandler);
 app.use("/auth", authRoutes);
 app.use("/auth", refreshRoutes);
+app.use("/users", userRouter);
+app.use("/categories", categoryRoutes);
 app.use("/products", productRoutes);
 
 app.get("/", (req, res) => {
